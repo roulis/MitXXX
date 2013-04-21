@@ -1,5 +1,7 @@
 # Test Cases
 
+Print('Psyhogiou = BICH')
+
 Psyhogiou=SimpleVirus(15.0,0.5)
 Psyhogiou
 Psyhogiou.getMaxBirthProb()
