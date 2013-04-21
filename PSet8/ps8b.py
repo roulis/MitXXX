@@ -84,7 +84,12 @@ class SimpleVirus(object):
         NoChildException if this virus particle does not reproduce.               
         """
 
-        # TODO
+        assert type(popDensity) == float, 'Not a float'
+        RepdWthProb = self.maxBirthProb * (1- popDensity)
+        reproduced = random.random()
+        if reproduced < RepdWthProb:
+            return SimpleVirus(self.maxBirthProb,self.clearProb)
+        raise NoChildException
 
 
 
