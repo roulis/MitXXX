@@ -35,8 +35,11 @@ class SimpleVirus(object):
         maxBirthProb: Maximum reproduction probability (a float between 0-1)        
         clearProb: Maximum clearance probability (a float between 0-1).
         """
-
-        # TODO
+        assert type(maxBirthProb)== float, 'Not a float'
+        assert type(clearProb)== float, 'Not a float'
+        self.maxBirthProb = maxBirthProb
+        self.clearProb = clearProb
+        
 
     def getMaxBirthProb(self):
         """
