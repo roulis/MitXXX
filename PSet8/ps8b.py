@@ -63,6 +63,7 @@ class SimpleVirus(object):
             return True
         else:
             return False
+
     
     def reproduce(self, popDensity):
         """
@@ -83,8 +84,6 @@ class SimpleVirus(object):
         maxBirthProb and clearProb values as this virus. Raises a
         NoChildException if this virus particle does not reproduce.               
         """
-
-        assert type(popDensity) == float, 'Not a float'
         RepdWthProb = self.maxBirthProb * (1- popDensity)
         reproduced = random.random()
         if reproduced < RepdWthProb:
@@ -132,7 +131,7 @@ class Patient(object):
         Gets the size of the current total virus population. 
         returns: The total virus population (an integer)
         """
-        return len(getViruses())
+        return len(self.getViruses())
                
 
 
@@ -154,14 +153,17 @@ class Patient(object):
         returns: The total virus population at the end of the update (an
         integer)
         """
-        viruses_bck=getViruses()
+        viruses_bck=self.getViruses()
         for AVir in viruses_bck:
             if AVir.doesClear():
                 self.viruses.remove(AVir)
         popDensity = self.getTotalPop()/float(self.maxPop)
-        viruses_bck=getViruses()
+        viruses_bck=self.getViruses()
         for virus in viruses_bck:
+            try:
                 self.viruses.append(SimpleVirus.reproduce(virus, popDensity))
+            except NoChildException:
+                continue
         return self.getTotalPop()
 
 
