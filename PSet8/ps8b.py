@@ -86,9 +86,10 @@ class SimpleVirus(object):
         """
         RepdWthProb = self.maxBirthProb * (1- popDensity)
         reproduced = random.random()
-        if reproduced < RepdWthProb:
-            return SimpleVirus(self.maxBirthProb,self.clearProb)
-        raise NoChildException
+        if RepdWthProb > reproduced:
+            return SimpleVirus(self.maxBirthProb, self.clearProb)
+        else:
+            raise NoChildException 
 
 
 
