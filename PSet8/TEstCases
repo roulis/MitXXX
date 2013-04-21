@@ -1,0 +1,11 @@
+# Test Cases
+
+Psyhogiou=SimpleVirus(15.0,0.5)
+Psyhogiou
+Psyhogiou.getMaxBirthProb()
+Psyhogiou.getClearProb()
+Psyhogiou.doesClear()
+Psyhogiou.doesClear()
+Psyhogiou.doesClear()
+Psyhogiou.doesClear()
+Psyhogiou.reproduce(0.01)
