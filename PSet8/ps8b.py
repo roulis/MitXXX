@@ -109,21 +109,22 @@ class Patient(object):
 
         maxPop: the maximum virus population for this patient (an integer)
         """
-
-        # TODO
+        self.viruses=viruses
+        self.maxPop=maxPop
+        
 
     def getViruses(self):
         """
         Returns the viruses in this Patient.
         """
-        # TODO
+        return self.viruses
 
 
     def getMaxPop(self):
         """
         Returns the max population.
         """
-        # TODO
+        return self.maxPop
 
 
     def getTotalPop(self):
@@ -131,8 +132,8 @@ class Patient(object):
         Gets the size of the current total virus population. 
         returns: The total virus population (an integer)
         """
-
-        # TODO        
+        return len(getViruses())
+               
 
 
     def update(self):
@@ -153,9 +154,15 @@ class Patient(object):
         returns: The total virus population at the end of the update (an
         integer)
         """
-
-        # TODO
-
+        viruses_bck=getViruses()
+        for AVir in viruses_bck:
+            if AVir.doesClear():
+                self.viruses.remove(AVir)
+        popDensity = self.getTotalPop()/float(self.maxPop)
+        viruses_bck=getViruses()
+        for virus in viruses_bck:
+                self.viruses.append(SimpleVirus.reproduce(virus, popDensity))
+        return self.getTotalPop()
 
 
 #
