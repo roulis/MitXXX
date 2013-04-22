@@ -88,10 +88,7 @@ class SimpleVirus(object):
         reproduced = random.random()
         if RepdWthProb > reproduced:
             return SimpleVirus(self.maxBirthProb, self.clearProb)
-        else:
-            raise NoChildException 
-
-
+        raise NoChildException()
 
 class Patient(object):
     """
@@ -160,11 +157,15 @@ class Patient(object):
                 self.viruses.remove(AVir)
         popDensity = self.getTotalPop()/float(self.maxPop)
         viruses_bck=self.getViruses()
+        newViruses = []
         for virus in viruses_bck:
             try:
-                self.viruses.append(SimpleVirus.reproduce(virus, popDensity))
+                offsrping=virus.reproduce(popDensity)
+                newViruses.append(offsrping)
             except NoChildException:
-                continue
+                pass
+         for newVirus in newViruses:
+            self.viruses.append(newVirus)
         return self.getTotalPop()
 
 
