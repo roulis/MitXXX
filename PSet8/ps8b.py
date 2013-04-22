@@ -3,6 +3,7 @@
 import numpy
 import random
 import pylab
+from ps8b_precompiled_27 import * 
 
 ''' 
 Begin helper code
@@ -164,31 +165,56 @@ class Patient(object):
                 newViruses.append(offsrping)
             except NoChildException:
                 pass
-         for newVirus in newViruses:
+        for newVirus in newViruses:
             self.viruses.append(newVirus)
         return self.getTotalPop()
-
-
+        
 #
 # PROBLEM 3
 #
 def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
                           numTrials):
-    """
-    Run the simulation and plot the graph for problem 3 (no drugs are used,
-    viruses do not have any drug resistance).    
-    For each of numTrials trial, instantiates a patient, runs a simulation
-    for 300 timesteps, and plots the average virus population size as a
-    function of time.
-
-    numViruses: number of SimpleVirus to create for patient (an integer)
-    maxPop: maximum virus population for patient (an integer)
-    maxBirthProb: Maximum reproduction probability (a float between 0-1)        
-    clearProb: Maximum clearance probability (a float between 0-1)
-    numTrials: number of simulation runs to execute (an integer)
-    """
-
-    # TODO
+   
+ 
+    final = None
+ 
+    for i in xrange(0, numTrials):
+        #print "running trial", i
+        results = runSimulation(numViruses, maxPop, maxBirthProb, clearProb)
+        if final == None:
+            final = results
+        else:
+            for s in xrange(0, len(results)):
+                final[s] += results[s]
+ 
+    for i in xrange(0, len(final)):
+        final[i] /= float(numTrials)
+   
+    pylab.plot(final, label = "SimpleVirus")
+    pylab.title("SimpleVirus simulation")
+    pylab.xlabel("time step")
+    pylab.ylabel("# viruses")
+    pylab.legend(loc = "best")
+    pylab.show()
+ 
+ 
+def runSimulation (numViruses, maxPop, maxBirthProb, clearProb):
+    """ helper function for doing one simulation run """
+    viruses = []
+   
+    for i in xrange(0, numViruses):
+        viruses.append(SimpleVirus(maxBirthProb, clearProb))
+ 
+    patL = Patient(viruses, maxPop)
+ 
+    steps = 300
+    numVirusesEachStep = []
+    for i in xrange(0, steps):
+        numVirusesEachStep.append(patL.update())
+ 
+    return numVirusesEachStep
+            
+#simulationWithoutDrug(100, 1000, 0.1, 0.05,10)
 
 
 
@@ -217,21 +243,22 @@ class ResistantVirus(SimpleVirus):
         mutProb: Mutation probability for this virus particle (a float). This is
         the probability of the offspring acquiring or losing resistance to a drug.
         """
-
-        # TODO
+        SimpleVirus.__init__(self, maxBirthProb, clearProb)
+        self.resistances = resistances
+        self.mutProb = mutProb
 
 
     def getResistances(self):
         """
         Returns the resistances for this virus.
         """
-        # TODO
+        return self.resistances
 
     def getMutProb(self):
         """
         Returns the mutation probability for this virus.
         """
-        # TODO
+        return self.mutProb
 
     def isResistantTo(self, drug):
         """
@@ -244,8 +271,10 @@ class ResistantVirus(SimpleVirus):
         returns: True if this virus instance is resistant to the drug, False
         otherwise.
         """
-        
-        # TODO
+        if drug in self.resistances:
+            return self.resistances[drug]
+        else:
+            return False
 
 
     def reproduce(self, popDensity, activeDrugs):
@@ -292,9 +321,26 @@ class ResistantVirus(SimpleVirus):
         maxBirthProb and clearProb values as this virus. Raises a
         NoChildException if this virus particle does not reproduce.
         """
-
-        # TODO
-
+        counter = 0
+        offspringRes = {}                
+        for drug in activeDrugs:
+            if self.isResistantTo(drug):
+                counter += 1
+                         
+        if counter == len(activeDrugs):
+            if random.random() <= self.maxBirthProb * (1 - popDensity):
+               
+                for d in self.resistances.keys():
+                    if random.random() <= self.mutProb:
+                         offspringRes[d] = not self.resistances[d]
+                    else:
+                         offspringRes[d] = self.resistances[d]
+                return ResistantVirus(self.getMaxBirthProb(), self.getClearProb(), offspringRes, self.getMutProb())
+            else:
+                raise NoChildException
+        else:
+            raise NoChildException
+            
             
 
 class TreatedPatient(Patient):
